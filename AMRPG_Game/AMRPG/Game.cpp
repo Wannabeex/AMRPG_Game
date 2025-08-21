@@ -3,6 +3,7 @@
 #include <chrono>
 #include <fstream>
 #include <string>
+#include <filesystem>
 #include "Game.h"
 #include "Input.h"
 #include "Renderer.h"
@@ -12,12 +13,13 @@ Game::Game() : running(false) {}
 
 void Game::init() {
 	running = true;
+
+	gfx.hideCursor();
 	//Load level
-	loadLevel("level1.txt");
+	loadLevel("levels/level1.txt");
 
 	//player.setPosition(5, 5);
 	//walls.push_back({ 8, 5, '#' });
-
 
 	gfx.clearScreen();
 }
@@ -31,8 +33,12 @@ void Game::loadLevel(const std::string& filename) {
 	}
 
 	std::string line;
+
 	int y = 0;
 	while (std::getline(file, line)) {
+		if (!line.empty() && line.back() == '\r')
+			line.pop_back();
+
 		for (int x = 0; x < line.size(); x++) {
 			char tile = line[x];
 			if (tile == '#') {
